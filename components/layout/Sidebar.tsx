@@ -4,7 +4,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface NavItem {
     name: string;
@@ -24,6 +24,22 @@ const navItems: NavItem[] = [
 export default function Sidebar() {
     const pathname = usePathname();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    // Lock body scroll when mobile menu is open
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+            document.body.style.height = '100vh';
+        } else {
+            document.body.style.overflow = '';
+            document.body.style.height = '';
+        }
+
+        return () => {
+            document.body.style.overflow = '';
+            document.body.style.height = '';
+        };
+    }, [isMobileMenuOpen]);
 
     return (
         <>
@@ -45,18 +61,19 @@ export default function Sidebar() {
             {/* Overlay for mobile */}
             {isMobileMenuOpen && (
                 <div
-                    className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden no-print animate-fade-in"
+                    className="fixed inset-0 bg-black/70 z-40 lg:hidden no-print animate-fade-in"
                     onClick={() => setIsMobileMenuOpen(false)}
                 />
             )}
 
             {/* Sidebar - Desktop: Left, Mobile: Right slide-in */}
             <aside className={`
-        fixed top-0 h-screen w-72 bg-gradient-to-b from-blue-900 to-blue-800 text-white shadow-2xl z-40 no-print transition-all duration-300 ease-in-out
-        ${isMobileMenuOpen ? 'right-0' : '-right-72'}
-        lg:left-0 lg:right-auto lg:translate-x-0 lg:w-64
+        fixed top-0 h-full w-80 bg-gradient-to-b from-blue-900 to-blue-800 text-white shadow-2xl z-40 no-print transition-all duration-300 ease-in-out flex flex-col
+        ${isMobileMenuOpen ? 'right-0' : '-right-80'}
+        lg:left-0 lg:right-auto lg:translate-x-0 lg:w-64 lg:h-screen
       `}>
-                <div className="p-6 border-b border-blue-700">
+                {/* Header */}
+                <div className="p-6 border-b border-blue-700 flex-shrink-0">
                     <div className="flex items-center justify-between lg:justify-start">
                         <div>
                             <h1 className="text-2xl font-bold mb-1">🧺 POS Laundry</h1>
@@ -75,7 +92,8 @@ export default function Sidebar() {
                     </div>
                 </div>
 
-                <nav className="px-3 py-4 space-y-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 180px)' }}>
+                {/* Navigation - Scrollable */}
+                <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                     {navItems.map((item) => {
                         const isActive = pathname === item.href;
 
@@ -85,8 +103,8 @@ export default function Sidebar() {
                                 href={item.href}
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive
-                                        ? 'bg-white text-blue-900 shadow-lg scale-105'
-                                        : 'text-blue-100 hover:bg-blue-700 hover:text-white hover:scale-102'
+                                    ? 'bg-white text-blue-900 shadow-lg scale-105'
+                                    : 'text-blue-100 hover:bg-blue-700 hover:text-white hover:scale-102'
                                     }`}
                             >
                                 <span className="text-xl">{item.icon}</span>
@@ -96,7 +114,8 @@ export default function Sidebar() {
                     })}
                 </nav>
 
-                <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-blue-700 bg-blue-900">
+                {/* Footer - User Info */}
+                <div className="p-6 border-t border-blue-700 bg-blue-900 flex-shrink-0">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-blue-700 flex items-center justify-center">
                             <span className="text-lg">👤</span>
