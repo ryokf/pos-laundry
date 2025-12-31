@@ -20,14 +20,14 @@ export default function Header({ title, subtitle }: HeaderProps) {
     return (
         <header className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 no-print">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div className="pl-12 lg:pl-0">
+                <div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{title}</h1>
                     {subtitle && (
                         <p className="text-gray-600 mt-1 text-sm sm:text-base">{subtitle}</p>
                     )}
                 </div>
 
-                <div className="text-left sm:text-right pl-12 lg:pl-0">
+                <div className="text-left sm:text-right">
                     <p className="text-xs sm:text-sm text-gray-500">{currentDate}</p>
                     <p className="text-base sm:text-lg font-semibold text-gray-900">
                         {new Date().toLocaleTimeString('id-ID', {
